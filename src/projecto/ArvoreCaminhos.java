@@ -1,7 +1,9 @@
 package projecto;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.PriorityQueue;
 
 
 
@@ -79,6 +81,32 @@ public class ArvoreCaminhos
 		int by = b.getY();
 		 
 		
+	}
+	
+	public void aStar()
+	{
+		   Comparator<MyNode> comparator = new queueCompartor();
+	        PriorityQueue<String> queue = new PriorityQueue<String>(10, comparator);
+	}
+	
+	
+	public class queueComparator implements Comparator<MyNode>
+	{
+	    @Override
+	    public int compare(MyNode x,MyNode y)
+	    {
+	        // Comparação da função para priorityQueue
+	        if (x.function() < y.function())
+	        {
+	            return -1;
+	        }
+	        if (x.function() > y.function())
+	        {
+	            return 1;
+	        }
+	        return 0;
+	    }
+
 	}
 
 

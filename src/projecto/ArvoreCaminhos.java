@@ -85,12 +85,12 @@ public class ArvoreCaminhos
 	
 	public void aStar()
 	{
-		   Comparator<MyNode> comparator = new queueCompartor();
-	        PriorityQueue<String> queue = new PriorityQueue<String>(10, comparator);
+		   Comparator<MyNode> comparator = new MyComparator();
+	       PriorityQueue<MyNode> queue = new PriorityQueue<MyNode>(10, comparator);
 	}
 	
 	
-	public class queueComparator implements Comparator<MyNode>
+	public class MyComparator implements Comparator<MyNode>
 	{
 	    @Override
 	    public int compare(MyNode x,MyNode y)

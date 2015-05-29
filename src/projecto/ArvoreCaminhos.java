@@ -1,5 +1,6 @@
 package projecto;
 
+import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -78,12 +79,42 @@ public class ArvoreCaminhos
 		return ret;
 	}
 
+	/*
+	 * Funcao que calcula se entre dois pontos se encontra uma parede
+	 * @param a
+	 *            Coord<Integer,Integer> coordenadas do primeiro ponto
+	 * @param b
+	 *            Coord<Integer,Integer> coordenadas do segundo ponto
+	 */
 	public void intersecao(Coord<Integer,Integer> a,Coord<Integer,Integer> b)
 	{
 		int ax = a.getX();
 		int ay = a.getY();
 		int bx = b.getX();
 		int by = b.getY();
+		float cx, cy, dx, dy;
+		
+		
+		List<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>> wallsIntersect = null;
+		
+		for (int i = 0; i < walls.size(); i++) {
+			
+			cx = walls.get(i).getX().getX();
+			cy = walls.get(i).getX().getY();
+			dx = walls.get(i).getY().getX();
+			dy = walls.get(i).getY().getY();
+			
+			Line2D line1 = new Line2D.Float(ax, ay, bx, by);
+			Line2D line2 = new Line2D.Float(cx, cy, dx, dy);
+			boolean result = line2.intersectsLine(line1);
+			
+			if (result) {
+				wallsIntersect.add(walls.get(i));
+			}
+			
+		}
+		 
+		
 	}
 
 	/*
@@ -110,8 +141,10 @@ public class ArvoreCaminhos
 	
 	/*
 	 * Função para verificar se todas as caixas foram apanhas e posição final é a do armazém
-	 * Parametros: Lista de um nó.
-	 * Retorno: true, se número de caixas existentes na lista = número caixas existentes e ultimo indice = armazém
+	 * Parametros
+	 * 			 List<Integer> list Lista de um nó.
+	 * Retorno: 
+	 * 			true, se número de caixas existentes na lista = número caixas existentes e ultimo indice = armazém
 	 * 			false, se não corresponder às condições.
 	 */
 	public boolean allCatched(List<Integer> list)
@@ -128,6 +161,9 @@ public class ArvoreCaminhos
 			return false;
 	}
 
+	
+	
+	//-------------------------------------get Distance modificar para a distancia já previamente calculada
 	public MyNode aStar()
 	{
 		boolean end = false;
@@ -140,6 +176,7 @@ public class ArvoreCaminhos
 			oldNode = queue.poll();
 			oldList = oldNode.getList();	
 			oldG = oldNode.getG();
+			int lastElement = oldList.get(oldList.size()-1);
 
 			for(int i=0; i < boxes.size(); i++ )
 			{
@@ -147,7 +184,7 @@ public class ArvoreCaminhos
 				{
 					double g = 0;
 					double h =0;
-					int lastElement = oldList.get(oldList.size()-1);
+					
 
 					MyNode node = new MyNode();
 					if(lastElement == -2)
@@ -171,13 +208,38 @@ public class ArvoreCaminhos
 					}
 					node.setH(h);
 					//
+<<<<<<< HEAD
 					//-------------------
 
 					if (allCatched(node.getList()))
 						return node;				
+=======
+					//-------------------			
+					// adicionar a lista antiga
+					node.setList(oldList);
+					node.addBoxIndex(i);					
+>>>>>>> origin/master
 					queue.add(node);
-				}
+				}	
 			}
+			//Adicionar a opção ir ao armazém excepto se ultimo elemento da lista for armazém, -2
+			if(lastElement != -2)
+			{
+				double g = 0;
+				double h = 0;
+				MyNode node = new MyNode();
+				g = getDistance(boxes.get(lastElement), storage) + oldG;
+				node.setG(g);
+				
+				node.setH(h);
+				
+				node.setList(oldList);
+				node.addBoxIndex(-2);
+				if (allCatched(node.getList()))
+					return node;
+				queue.add(node);
+			}		
+			
 		}while (!end);
 
 		return null;

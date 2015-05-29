@@ -85,7 +85,7 @@ public class ArvoreCaminhos
 	 * @param b
 	 *            Coord<Integer,Integer> coordenadas do segundo ponto
 	 */
-	public void intersecao(Coord<Integer,Integer> a,Coord<Integer,Integer> b)
+	public List<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>> intersecao(Coord<Integer,Integer> a,Coord<Integer,Integer> b)
 	{
 		int ax = a.getX();
 		int ay = a.getY();
@@ -94,7 +94,8 @@ public class ArvoreCaminhos
 		float cx, cy, dx, dy;
 		
 		
-		List<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>> wallsIntersect = null;
+		List<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>> wallsIntersect = 
+				new ArrayList<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>>();
 		
 		for (int i = 0; i < walls.size(); i++) {
 			
@@ -110,11 +111,11 @@ public class ArvoreCaminhos
 			if (result) {
 				wallsIntersect.add(walls.get(i));
 			}
-			
 		}
-		 
-		
+		return wallsIntersect;
 	}
+	
+	
 
 	/*
 	 * Inicialização da priority queue com todas as caixas produzidas para nós

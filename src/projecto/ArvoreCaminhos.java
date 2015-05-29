@@ -18,6 +18,7 @@ public class ArvoreCaminhos
 	Coord<Integer, Integer> storage;
 	Comparator<MyNode> comparator = new MyComparator();
 	PriorityQueue<MyNode> queue = new PriorityQueue<MyNode>(10, comparator);
+	int capacity = 1;
 
 
 	public void inserirDados ()
@@ -93,21 +94,20 @@ public class ArvoreCaminhos
 		int by = b.getY();
 		float cx, cy, dx, dy;
 		
-		
 		List<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>> wallsIntersect = 
 				new ArrayList<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>>();
 		
 		for (int i = 0; i < walls.size(); i++) {
-			
+
 			cx = walls.get(i).getX().getX();
 			cy = walls.get(i).getX().getY();
 			dx = walls.get(i).getY().getX();
 			dy = walls.get(i).getY().getY();
-			
+
 			Line2D line1 = new Line2D.Float(ax, ay, bx, by);
 			Line2D line2 = new Line2D.Float(cx, cy, dx, dy);
 			boolean result = line2.intersectsLine(line1);
-			
+
 			if (result) {
 				wallsIntersect.add(walls.get(i));
 			}
@@ -138,7 +138,7 @@ public class ArvoreCaminhos
 		}
 		return queue;
 	}
-	
+
 	/*
 	 * Função para verificar se todas as caixas foram apanhas e posição final é a do armazém
 	 * Parametros
@@ -161,8 +161,18 @@ public class ArvoreCaminhos
 			return false;
 	}
 
-	
-	
+	public boolean maxCapacity(MyNode node)
+	{
+		boolean wentStorage = false;
+		for(int i = capacity; i > 0; i--)
+			if(node.getList().get(i) == -2)
+				wentStorage = true;
+		if (wentStorage)
+			return false;
+		else
+			return true;
+	}
+
 	//-------------------------------------get Distance modificar para a distancia já previamente calculada
 	public MyNode aStar()
 	{
@@ -178,55 +188,77 @@ public class ArvoreCaminhos
 			oldG = oldNode.getG();
 			int lastElement = oldList.get(oldList.size()-1);
 
-			for(int i=0; i < boxes.size(); i++ )
-			{
-				if (!oldList.contains(i))
-				{
-					double g = 0;
-					double h =0;
-					
-
-					MyNode node = new MyNode();
-					if(lastElement == -2)
-						g = getDistance(storage, boxes.get(i)) + oldG;
-					else
-						g = getDistance(boxes.get(lastElement), boxes.get(i)) + oldG;	
-					node.setG(g);
-					// adicionar a lista antiga
-					node.setList(oldList);
-					node.addBoxIndex(i);
-					for(int j = 0; j < boxes.size(); j++)
-					{
-						if(!node.getList().contains(i))
-						{
-							double d = getDistance(boxes.get(lastElement), boxes.get(i)) + getDistance(boxes.get(i), storage);
-							if(d > h)
-								h = d;
-						}
-					}
-					node.setH(h);
-					
-					queue.add(node);
-				}	
-			}
-			//Adicionar a opção ir ao armazém excepto se ultimo elemento da lista for armazém, -2
-			if(lastElement != -2)
+			if (maxCapacity(oldNode))
 			{
 				double g = 0;
 				double h = 0;
 				MyNode node = new MyNode();
 				g = getDistance(boxes.get(lastElement), storage) + oldG;
 				node.setG(g);
-				
+
 				node.setH(h);
-				
+
 				node.setList(oldList);
 				node.addBoxIndex(-2);
 				if (allCatched(node.getList()))
 					return node;
 				queue.add(node);
-			}		
-			
+			}
+
+			else 
+			{
+				for(int i=0; i < boxes.size(); i++ )
+				{
+					if (!oldList.contains(i))
+					{
+						double g = 0;
+						double h =0;
+
+
+						MyNode node = new MyNode();
+						if(lastElement == -2)
+							g = getDistance(storage, boxes.get(i)) + oldG;
+						else
+							g = getDistance(boxes.get(lastElement), boxes.get(i)) + oldG; 
+						node.setG(g);
+						// adicionar a lista antiga
+						node.setList(oldList);
+						node.addBoxIndex(i);
+						for(int j = 0; j < boxes.size(); j++)
+						{
+							if(!node.getList().contains(i))
+							{
+								double d = getDistance(boxes.get(lastElement), boxes.get(i)) + getDistance(boxes.get(i), storage);
+								if(d > h)
+									h = d;
+							}
+						}
+						node.setH(h);
+
+						queue.add(node);
+					}
+				}
+
+				//Adicionar a opção ir ao armazém excepto se ultimo elemento da lista for armazém, -2
+				if(lastElement != -2)
+				{
+					double g = 0;
+					double h = 0;
+					MyNode node = new MyNode();
+					g = getDistance(boxes.get(lastElement), storage) + oldG;
+					node.setG(g);
+
+					node.setH(h);
+
+					node.setList(oldList);
+					node.addBoxIndex(-2);
+					if (allCatched(node.getList()))
+						return node;
+					queue.add(node);
+				}		
+			}
+
+
 		}while (!end);
 
 		return null;

@@ -219,18 +219,24 @@ public class ArvoreCaminhos
 						if(lastElement == -2)
 							g = getDistance(storage, boxes.get(i)) + oldG;
 						else
-							g = getDistance(boxes.get(lastElement), boxes.get(i)) + oldG;	
-						node.setG(g);	
-						//-------------------Como fazer set da heuristica eu nao sei gg ---
-						//
-						node.setH(h);
-						//
-						//-------------------			
+							g = getDistance(boxes.get(lastElement), boxes.get(i)) + oldG; 
+						node.setG(g);
 						// adicionar a lista antiga
 						node.setList(oldList);
-						node.addBoxIndex(i);					
+						node.addBoxIndex(i);
+						for(int j = 0; j < boxes.size(); j++)
+						{
+							if(!node.getList().contains(i))
+							{
+								double d = getDistance(boxes.get(lastElement), boxes.get(i)) + getDistance(boxes.get(i), storage);
+								if(d > h)
+									h = d;
+							}
+						}
+						node.setH(h);
+
 						queue.add(node);
-					}	
+					}
 				}
 
 				//Adicionar a opção ir ao armazém excepto se ultimo elemento da lista for armazém, -2

@@ -3,6 +3,7 @@ package projecto;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -19,6 +20,7 @@ public class ArvoreCaminhos
 	Comparator<MyNode> comparator = new MyComparator();
 	PriorityQueue<MyNode> queue = new PriorityQueue<MyNode>(10, comparator);
 	int capacity = 1;
+	HashMap<String, Integer> distancias = new HashMap<String, Integer>();
 
 
 	public void inserirDados ()
@@ -51,18 +53,39 @@ public class ArvoreCaminhos
 		startPoint = new Coord<Integer, Integer>(0,0);	
 	}
 
-	public double getDistance(Coord<Integer, Integer> a, Coord<Integer, Integer> b)
+	public double realDistance(Coord<Integer, Integer> a, Coord<Integer, Integer> b)
+	{
+		List<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>> intersectedWalls = intersect(a, b);
+
+		double distance = 0;
+		if(intersectedWalls.size() == 0)
+		{
+			int ax = a.getX();
+			int ay = a.getY();
+			int bx = b.getX();
+			int by = b.getY();
+
+			distance = Math.sqrt((bx-ax)*(bx-ax)+(by-ay)*(by-ay));
+		}
+		else
+		{
+
+		}
+		return distance;
+	}
+
+	public double lineDistance(Coord<Integer, Integer> a, Coord<Integer, Integer> b)
 	{
 		int ax = a.getX();
 		int ay = a.getY();
 		int bx = b.getX();
 		int by = b.getY();
 
-		double dab = Math.sqrt((bx-ax)*(bx-ax)+(by-ay)*(by-ay));
-		return dab;
+		double distance = Math.sqrt((bx-ax)*(bx-ax)+(by-ay)*(by-ay));
+		return distance;
 	}
 
-	public double[] getDistance(Wall<Coord<Integer,Integer>,Coord<Integer,Integer>> a, Coord<Integer, Integer> b)
+	public double[] lineDistance(Wall<Coord<Integer,Integer>,Coord<Integer,Integer>> a, Coord<Integer, Integer> b)
 	{
 		int v1x = a.getX().getX();
 		int v1y = a.getX().getY();
@@ -86,17 +109,17 @@ public class ArvoreCaminhos
 	 * @param b
 	 *            Coord<Integer,Integer> coordenadas do segundo ponto
 	 */
-	public List<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>> intersecao(Coord<Integer,Integer> a,Coord<Integer,Integer> b)
+	public List<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>> intersect(Coord<Integer,Integer> a,Coord<Integer,Integer> b)
 	{
 		int ax = a.getX();
 		int ay = a.getY();
 		int bx = b.getX();
 		int by = b.getY();
 		float cx, cy, dx, dy;
-		
+
 		List<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>> wallsIntersect = 
 				new ArrayList<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>>();
-		
+
 		for (int i = 0; i < walls.size(); i++) {
 
 			cx = walls.get(i).getX().getX();
@@ -114,8 +137,6 @@ public class ArvoreCaminhos
 		}
 		return wallsIntersect;
 	}
-	
-	
 
 	/*
 	 * Inicialização da priority queue com todas as caixas produzidas para nós
@@ -126,7 +147,7 @@ public class ArvoreCaminhos
 		for(int i = 0; i < boxes.size(); i++)
 		{
 			MyNode node = new MyNode();
-			double g = getDistance(boxes.get(i), startPoint);
+			double g = lineDistance(boxes.get(i), startPoint);
 
 			node.setG(g);
 			//-------------------Como fazer set da heuristica eu nao sei gg ---
@@ -193,15 +214,25 @@ public class ArvoreCaminhos
 				double g = 0;
 				double h = 0;
 				MyNode node = new MyNode();
-				g = getDistance(boxes.get(lastElement), storage) + oldG;
+				g = lineDistance(boxes.get(lastElement), storage) + oldG;
 				node.setG(g);
-
-				node.setH(h);
 
 				node.setList(oldList);
 				node.addBoxIndex(-2);
 				if (allCatched(node.getList()))
 					return node;
+
+				for(int j = 0; j < boxes.size(); j++)
+				{
+					if(!node.getList().contains(j))
+					{
+						double d = lineDistance(storage, boxes.get(j)) + lineDistance(boxes.get(j), storage);
+						if(d > h)
+							h = d;
+					}
+				}
+				node.setH(h);
+
 				queue.add(node);
 			}
 
@@ -214,21 +245,21 @@ public class ArvoreCaminhos
 						double g = 0;
 						double h =0;
 
-
 						MyNode node = new MyNode();
 						if(lastElement == -2)
-							g = getDistance(storage, boxes.get(i)) + oldG;
+							g = lineDistance(storage, boxes.get(i)) + oldG;
 						else
-							g = getDistance(boxes.get(lastElement), boxes.get(i)) + oldG; 
+							g = lineDistance(boxes.get(lastElement), boxes.get(i)) + oldG; 
 						node.setG(g);
-						// adicionar a lista antiga
+
 						node.setList(oldList);
 						node.addBoxIndex(i);
+
 						for(int j = 0; j < boxes.size(); j++)
 						{
-							if(!node.getList().contains(i))
+							if(!node.getList().contains(j))
 							{
-								double d = getDistance(boxes.get(lastElement), boxes.get(i)) + getDistance(boxes.get(i), storage);
+								double d = lineDistance(boxes.get(lastElement+1), boxes.get(j)) + lineDistance(boxes.get(j), storage);
 								if(d > h)
 									h = d;
 							}
@@ -245,15 +276,25 @@ public class ArvoreCaminhos
 					double g = 0;
 					double h = 0;
 					MyNode node = new MyNode();
-					g = getDistance(boxes.get(lastElement), storage) + oldG;
+					g = lineDistance(boxes.get(lastElement), storage) + oldG;
 					node.setG(g);
-
-					node.setH(h);
 
 					node.setList(oldList);
 					node.addBoxIndex(-2);
 					if (allCatched(node.getList()))
 						return node;
+
+					for(int j = 0; j < boxes.size(); j++)
+					{
+						if(!node.getList().contains(j))
+						{
+							double d = lineDistance(storage, boxes.get(j)) + lineDistance(boxes.get(j), storage);
+							if(d > h)
+								h = d;
+						}
+					}
+					node.setH(h);
+
 					queue.add(node);
 				}		
 			}

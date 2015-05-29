@@ -10,9 +10,9 @@ public class MyNode {
 	double function = g + h;
 	List<Integer> list = new ArrayList<Integer>();
 
-	public double function() {
-		// TODO Auto-generated method stub
-		return 0;
+	public double function()
+	{
+		return function;
 	}
 	
 	public void setG(double i)

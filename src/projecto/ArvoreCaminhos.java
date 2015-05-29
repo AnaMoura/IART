@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.Queue;
 
 
 /* -1 é Start Point
@@ -195,8 +194,6 @@ public class ArvoreCaminhos
 					// adicionar a lista antiga
 					node.setList(oldList);
 					node.addBoxIndex(i);
-					//-------------------Como fazer set da heuristica eu nao sei gg ---
-					//
 					for(int j = 0; j < boxes.size(); j++)
 					{
 						if(!node.getList().contains(i))
@@ -207,18 +204,7 @@ public class ArvoreCaminhos
 						}
 					}
 					node.setH(h);
-					//
-<<<<<<< HEAD
-					//-------------------
-
-					if (allCatched(node.getList()))
-						return node;				
-=======
-					//-------------------			
-					// adicionar a lista antiga
-					node.setList(oldList);
-					node.addBoxIndex(i);					
->>>>>>> origin/master
+					
 					queue.add(node);
 				}	
 			}

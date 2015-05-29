@@ -1,12 +1,12 @@
 package projecto;
 
 
-	public class Parede<X,Y> {
+	public class Wall<X,Y> {
 	    
 		X x;
 	    Y y;
 	    
-	    public Parede(X x, Y y)
+	    public Wall(X x, Y y)
 	    {
 	        this.x = x;
 	        this.y = y;

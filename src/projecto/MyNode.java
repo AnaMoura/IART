@@ -1,5 +1,55 @@
 package projecto;
 
-public class MyNode {
+import java.util.ArrayList;
+import java.util.List;
 
+public class MyNode {
+	
+	double g = 0;
+	double h = 0;
+	double function = g + h;
+	List<Integer> list = new ArrayList<Integer>();
+
+	public double function() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
+	public void setG(double i)
+	{
+		g = i;
+	}
+	
+	public void setH(double i)
+	{
+		h = i;
+	}
+	
+	public void addBoxIndex(int i)
+	{
+		list.add(i);
+	}
+	
+	public void setList(List<Integer> newList)
+	{
+		list = newList;
+	}
+	
+	public double getG()
+	{
+		return g;
+	}
+	
+	public double getH()
+	{
+		return h;
+	}
+	
+	public List<Integer> getList()
+	{
+		return list;
+	}
+	
+
+	
 }

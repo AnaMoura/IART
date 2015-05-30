@@ -53,11 +53,11 @@ public class ArvoreCaminhos
 		startPoint = new Coord<Integer, Integer>(0,0);	
 	}
 
-	public double realDistance(Coord<Integer, Integer> a, Coord<Integer, Integer> b)
+	public PathNode realDistance(Coord<Integer, Integer> a, Coord<Integer, Integer> b)
 	{
-		List<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>> intersectedWalls = intersect(a, b);
+		List<Coord<Integer, Integer>> intersectedWalls = intersect(a, b);
 
-		double distance = 0;
+		PathNode node;
 		if(intersectedWalls.size() == 0)
 		{
 			int ax = a.getX();
@@ -65,13 +65,86 @@ public class ArvoreCaminhos
 			int bx = b.getX();
 			int by = b.getY();
 
-			distance = Math.sqrt((bx-ax)*(bx-ax)+(by-ay)*(by-ay));
+			double g = Math.sqrt((bx-ax)*(bx-ax)+(by-ay)*(by-ay));
+			node = new PathNode();
+			node.setG(g);
 		}
 		else
 		{
-
+			node = aStar(a, b, intersectedWalls);
 		}
-		return distance;
+		return node;
+	}
+
+	private PathNode aStar(Coord<Integer, Integer> a, Coord<Integer, Integer> b,
+			List<Coord<Integer, Integer>> intersectedWalls)
+	{
+		Comparator<PathNode> coordComparator = new CoordComparator();
+		PriorityQueue<PathNode> coordQueue = new PriorityQueue<PathNode>(10, coordComparator);
+
+		for(int i = 0; i < intersectedWalls.size(); i++)
+		{
+			Coord<Integer, Integer> coord = intersectedWalls.get(i);
+			if(intersect(a, coord).size() == 0)
+			{
+				double g, h;
+				PathNode node = new PathNode();
+				node.addCoord(coord);
+				g = lineDistance(a, coord);
+				h = lineDistance(coord, b);
+				node.setG(g);
+				node.setH(h);
+				coordQueue.add(node);
+			}
+		}
+
+		Coord<Integer, Integer> oldCoord;
+		PathNode oldNode;
+		double oldG;
+
+		while(coordQueue.size() != 0)
+		{
+			oldNode = coordQueue.poll();
+			oldCoord = oldNode.getCoord();	
+			oldG = oldNode.getG();
+
+			List<Coord<Integer, Integer>> walls = intersect(oldCoord, b);
+
+			if(walls.size() == 0)
+			{
+				double g, h;
+				PathNode node = new PathNode();
+				node.setPath(oldNode.getPath());
+				g = lineDistance(oldCoord, b) + oldG;
+				h = 0;
+				node.setG(g);
+				node.setH(h);
+				return node;
+			}
+			else
+			{
+				for(int i = 0; i < intersectedWalls.size(); i++)
+				{
+					Coord<Integer, Integer> coord = intersectedWalls.get(i);
+					if(!oldNode.getPath().contains(coord))
+					{
+						if(intersect(oldCoord, coord).size() == 0)
+						{
+							double g, h;
+							PathNode node = new PathNode();
+							node.setPath(oldNode.getPath());
+							node.addCoord(coord);
+							g = lineDistance(oldCoord, coord) + oldG;
+							h = lineDistance(coord, b);
+							node.setG(g);
+							node.setH(h);
+							coordQueue.add(node);
+						}
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 	public double lineDistance(Coord<Integer, Integer> a, Coord<Integer, Integer> b)
@@ -109,7 +182,7 @@ public class ArvoreCaminhos
 	 * @param b
 	 *            Coord<Integer,Integer> coordenadas do segundo ponto
 	 */
-	public List<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>> intersect(Coord<Integer,Integer> a,Coord<Integer,Integer> b)
+	public List<Coord<Integer, Integer>> intersect(Coord<Integer,Integer> a,Coord<Integer,Integer> b)
 	{
 		int ax = a.getX();
 		int ay = a.getY();
@@ -117,8 +190,7 @@ public class ArvoreCaminhos
 		int by = b.getY();
 		float cx, cy, dx, dy;
 
-		List<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>> wallsIntersect = 
-				new ArrayList<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>>();
+		List<Coord<Integer, Integer>> intersectedWalls = new ArrayList<Coord<Integer, Integer>>();
 
 		for (int i = 0; i < walls.size(); i++) {
 
@@ -132,10 +204,11 @@ public class ArvoreCaminhos
 			boolean result = line2.intersectsLine(line1);
 
 			if (result) {
-				wallsIntersect.add(walls.get(i));
+				intersectedWalls.add(walls.get(i).getX());
+				intersectedWalls.add(walls.get(i).getY());
 			}
 		}
-		return wallsIntersect;
+		return intersectedWalls;
 	}
 
 	/*
@@ -312,7 +385,24 @@ public class ArvoreCaminhos
 	public class MyComparator implements Comparator<MyNode>
 	{
 		@Override
-		public int compare(MyNode x,MyNode y)
+		public int compare(MyNode x, MyNode y)
+		{
+			if (x.function() < y.function())
+				return -1;
+			if (x.function() > y.function())
+				return 1;
+			return 0;
+		}
+	}
+
+
+	/*
+	 * Override do Comparator para a priority queue de coordenadas, é comparado a function do node.
+	 */
+	public class CoordComparator implements Comparator<PathNode>
+	{
+		@Override
+		public int compare(PathNode x, PathNode y)
 		{
 			if (x.function() < y.function())
 				return -1;

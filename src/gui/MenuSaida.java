@@ -26,7 +26,7 @@ import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 
 import projecto.Coord;
-import projecto.Parede;
+import projecto.Wall;
 
 /**
  * MenuSaida.java - Classe responsavel pelo menu de configuracao da saida
@@ -45,7 +45,7 @@ public class MenuSaida extends JFrame implements MouseListener {
 	private Image exit, caixa, robot;
 	int robotX, robotY, robotCap;
 	private ArrayList<Coord<Integer, Integer>> caixas;
-	private ArrayList<Parede<Coord<Integer, Integer>, Coord<Integer, Integer>>> paredes;
+	private ArrayList<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>> paredes;
 	
 	public static Container cont;
 	private JPanel armazem, objetos;
@@ -62,7 +62,7 @@ public class MenuSaida extends JFrame implements MouseListener {
 	 * @param paredes
 	 * @throws IOException
 	 */
-	public MenuSaida(int robotX, int robotY, int robotCap, ArrayList<Coord<Integer, Integer>> caixas, ArrayList<Parede<Coord<Integer, Integer>, Coord<Integer, Integer>>> paredes) throws IOException {
+	public MenuSaida(int robotX, int robotY, int robotCap, ArrayList<Coord<Integer, Integer>> caixas, ArrayList<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>> paredes) throws IOException {
 		super("Menu Saida");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		

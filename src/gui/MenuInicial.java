@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import javax.swing.*;
 
 import projecto.Coord;
-import projecto.Parede;
+import projecto.Wall;
 
 /**
  * MenuInicial.java - Classe responsavel pelo menu incial da vertente grafica do jogo
@@ -99,7 +99,7 @@ public class MenuInicial extends JFrame implements MouseListener {
 				try {
 					int robotX, robotY, robotCap, saidaX, saidaY;
 					ArrayList<Coord<Integer, Integer>> caixas;
-					ArrayList<Parede<Coord<Integer, Integer>, Coord<Integer, Integer>>> paredes; 
+					ArrayList<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>> paredes; 
 					
 					robotX = (int) (width*805) / (1920);
 					robotY = (int) (height*737) / (1080);
@@ -122,10 +122,10 @@ public class MenuInicial extends JFrame implements MouseListener {
 					Coord<Integer, Integer> cd3 = new Coord<Integer, Integer>((int) (width*253) / (1920), (int) (height*552) / (1080));
 					Coord<Integer, Integer> cd4 = new Coord<Integer, Integer>((int) (width*249) / (1920), (int) (height*701) / (1080));
 					
-					Parede<Coord<Integer, Integer>, Coord<Integer, Integer>> parede1 = new Parede<Coord<Integer, Integer>, Coord<Integer, Integer>>(cd1,cd2);
-					Parede<Coord<Integer, Integer>, Coord<Integer, Integer>> parede2 = new Parede<Coord<Integer, Integer>, Coord<Integer, Integer>>(cd3,cd4);
+					Wall<Coord<Integer, Integer>, Coord<Integer, Integer>> parede1 = new Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>(cd1,cd2);
+					Wall<Coord<Integer, Integer>, Coord<Integer, Integer>> parede2 = new Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>(cd3,cd4);
 					
-					paredes = new ArrayList<Parede<Coord<Integer, Integer>, Coord<Integer, Integer>>>();
+					paredes = new ArrayList<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>>();
 					paredes.add(parede1);
 					paredes.add(parede2);
 					

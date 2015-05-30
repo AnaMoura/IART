@@ -26,7 +26,7 @@ import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 
 import projecto.Coord;
-import projecto.Parede;
+import projecto.Wall;
 
 /**
  * MenuParedes.java - Classe responsavel pelo menu de configuracoes das paredes
@@ -41,7 +41,7 @@ public class MenuParedes extends JFrame implements MouseListener {
 
 	private JPanel jpall;
 	private int paredeP1X, paredeP1Y, paredeP2X, paredeP2Y, numeroParedes;
-	private ArrayList<Parede<Coord<Integer, Integer>, Coord<Integer, Integer>>> paredes;
+	private ArrayList<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>> paredes;
 	private JLabel paredeP1XLabel, paredeP1YLabel, paredeP2XLabel, paredeP2YLabel, numeroParedesLabel;
 	
 	public static Container cont;
@@ -101,7 +101,7 @@ public class MenuParedes extends JFrame implements MouseListener {
 		paredeP2X = 0;
 		paredeP2Y = 0;
 		
-		paredes = new ArrayList<Parede<Coord<Integer, Integer>, Coord<Integer, Integer>>>();
+		paredes = new ArrayList<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>>();
 
 		jpall = new JPanel();
 		initParedes();
@@ -219,7 +219,7 @@ public class MenuParedes extends JFrame implements MouseListener {
 							Coord<Integer, Integer> coord1 = new Coord<Integer, Integer>(paredeP1X, paredeP1Y);
 							Coord<Integer, Integer> coord2 = new Coord<Integer, Integer>(paredeP2X, paredeP2Y);
 							
-							Parede<Coord<Integer, Integer>, Coord<Integer, Integer>> parede = new Parede<Coord<Integer, Integer>, Coord<Integer, Integer>>(coord1,coord2);
+							Wall<Coord<Integer, Integer>, Coord<Integer, Integer>> parede = new Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>(coord1,coord2);
 							
 							paredes.add(parede);
 							numeroParedes++;

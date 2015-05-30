@@ -1,9 +1,11 @@
 package gui;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -11,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.Line2D;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -23,7 +26,7 @@ import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 
 import projecto.Coord;
-import projecto.Wall;
+import projecto.Parede;
 
 /**
  * Percurso.java - Classe responsavel pela representacao do trajecto do robot
@@ -39,7 +42,7 @@ public class Percurso extends JFrame implements MouseListener {
 	private JPanel jpall;
 	int robotX, robotY, robotCap;
 	private ArrayList<Coord<Integer, Integer>> caixas;
-	private ArrayList<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>> paredes;
+	private ArrayList<Parede<Coord<Integer, Integer>, Coord<Integer, Integer>>> paredes;
 	private int saidaX, saidaY;
 	
 	public static Container cont;
@@ -49,6 +52,10 @@ public class Percurso extends JFrame implements MouseListener {
 	private Image caixa, robot, exit;
 	private JLabel distanciaLabel;
 	private int distanciaPercorrida;
+	private boolean solutionFound;
+	private ArrayList<Coord<Integer, Integer>> percurso;
+	
+	private int counter;
 
 	/**
 	 * Construtor com os parametros que recebe do menu anterior
@@ -62,8 +69,8 @@ public class Percurso extends JFrame implements MouseListener {
 	 * @param saidaY
 	 * @throws IOException
 	 */
-	public Percurso(int robotX, int robotY, int robotCap, ArrayList<Coord<Integer, Integer>> caixas, ArrayList<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>> paredes, int saidaX, int saidaY) throws IOException {
-		super("Menu Caixas");
+	public Percurso(int robotX, int robotY, int robotCap, ArrayList<Coord<Integer, Integer>> caixas, ArrayList<Parede<Coord<Integer, Integer>, Coord<Integer, Integer>>> paredes, int saidaX, int saidaY) throws IOException {
+		super("Percurso");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -89,7 +96,7 @@ public class Percurso extends JFrame implements MouseListener {
 		objetos.setLayout(new BoxLayout(objetos,BoxLayout.X_AXIS));
 		
 		this.addMouseListener(this);
-		
+		solutionFound = false;
 		this.robotX = robotX;
 		this.robotY = robotY;
 		this.robotCap = robotCap;
@@ -97,11 +104,13 @@ public class Percurso extends JFrame implements MouseListener {
 		this.paredes = paredes;
 		this.saidaX = saidaX;
 		this.saidaY = saidaY;
+		distanciaPercorrida = 0;
+		
+		counter = 0;
+		
 		robot = Toolkit.getDefaultToolkit().getImage("imagens/robot.png");
 		caixa = Toolkit.getDefaultToolkit().getImage("imagens/caixa.png");
 		exit = Toolkit.getDefaultToolkit().getImage("imagens/exit.png");
-
-		distanciaPercorrida = 0;
 		
 		jpall = new JPanel();
 		initDist();
@@ -119,7 +128,8 @@ public class Percurso extends JFrame implements MouseListener {
 		setResizable(false);
 
 		setVisible(true);
-
+		
+		calcula();
 	}
 	
 	/**
@@ -128,9 +138,10 @@ public class Percurso extends JFrame implements MouseListener {
 	public void paint(Graphics g) {
 		super.paintComponents(g);
 		
+		
 		g.drawImage(robot, robotX-37, robotY-49,	100, 100, this);
 		
-		for (int i = 0; i < caixas.size(); i++) {
+		/*for (int i = 0; i < caixas.size(); i++) {
 			
 			int cx, cy;
 			
@@ -150,12 +161,113 @@ public class Percurso extends JFrame implements MouseListener {
 			dx = paredes.get(i).getY().getX();
 			dy = paredes.get(i).getY().getY();
 			
-			g.setColor(Color.WHITE);
-			g.drawLine(cx, cy, dx, dy);	
+			Graphics2D g2 = (Graphics2D) g;
+			g2.setColor(Color.WHITE);
+            g2.setStroke(new BasicStroke(5));
+            g2.draw(new Line2D.Float(cx, cy, dx, dy));
 			
 		}
 		
 		g.drawImage(exit, saidaX-50, saidaY-50,	100, 100, this);
+		
+		if (solutionFound) {
+			for (int i = 1; i < percurso.size(); i++) {
+				
+				int cx, cy, dx, dy;
+				
+				cx = percurso.get(i-1).getX();
+				cy = percurso.get(i-1).getY();
+				dx = percurso.get(i).getX();
+				dy = percurso.get(i).getY();
+				
+				Graphics2D g2 = (Graphics2D) g;
+				g2.setColor(Color.GREEN);
+	            g2.setStroke(new BasicStroke(7));
+	            g2.draw(new Line2D.Float(cx, cy, dx, dy));
+				
+			}
+		}*/
+		
+	}
+	
+	/**
+	 * Funcao que passa o valor das variaveis as funcoes de logica para calcularem o percurso
+	 */
+	private void calcula() {
+		percurso = new ArrayList<Coord<Integer, Integer>>();
+		//percurso = func(robotX, robotY, robotCap, caixas, paredes, saidaX, saidaY)
+			
+		Coord<Integer, Integer> c1 = new Coord<Integer, Integer>(10,10);
+		percurso.add(c1);
+		Coord<Integer, Integer> c2 = new Coord<Integer, Integer>(200,100);
+		percurso.add(c2);
+		Coord<Integer, Integer> c3 = new Coord<Integer, Integer>(600,700);
+		percurso.add(c3);
+		solutionFound = true;
+
+		/*for (int cnt = 0; cnt < percurso.size(); cnt++) {
+			robotX = percurso.get(counter).getX();
+			robotY = percurso.get(counter).getY();
+			System.out.println(robotX);
+			System.out.println(robotY);
+			counter++;
+			
+			System.out.println("----");
+			
+			repaint();
+			
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}*/
+		
+		/*for (int i = 0; i < percurso.size(); i++) {
+			coordx = percurso.get(i).getX();
+			coordy = percurso.get(i).getY();
+			
+			System.out.println(robotX);
+			System.out.println(robotY);
+			
+			boolean reaching = true;
+			
+			while (reaching) {
+				
+				if (robotX < coordx) {
+					//System.out.println("1");
+					robotX++;
+				}
+				
+				if (robotX > coordx) {
+					//System.out.println("2");
+					robotX--;
+				}
+				
+				if (robotY < coordy) {
+					//System.out.println("3");
+					robotY++;
+				}
+				
+				if (robotY > coordy) {
+					//System.out.println("4");
+					robotY--;
+				}
+				
+				if (robotX == coordx && robotY == coordy) {
+					//System.out.println("5");
+					reaching = false;
+				}
+			
+				repaint();
+
+			}
+		}*/
+		
+		
+		
 	}
 	
 	/**

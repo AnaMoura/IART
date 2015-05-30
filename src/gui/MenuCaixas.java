@@ -293,7 +293,7 @@ public class MenuCaixas extends JFrame implements MouseListener {
 		
 		int y = arg0.getY();
 		
-		if (y <= 950) {		
+		if (y <= (int) (height*950) / (1080)) {		
 			
 			int x = arg0.getX();
 			

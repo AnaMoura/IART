@@ -233,8 +233,8 @@ public class MenuRobot extends JFrame implements MouseListener {
 	public void mousePressed(MouseEvent arg0) {
 		
 		int y = arg0.getY();
-		
-		if (y <= 950) {		
+
+		if (y <= (int) (height*950) / (1080)) {		
 			
 			int x = arg0.getX();
 			

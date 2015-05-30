@@ -1,9 +1,11 @@
 package gui;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -11,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.Line2D;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -23,7 +26,7 @@ import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 
 import projecto.Coord;
-import projecto.Wall;
+import projecto.Parede;
 
 /**
  * MenuSaida.java - Classe responsavel pelo menu de configuracao da saida
@@ -42,7 +45,7 @@ public class MenuSaida extends JFrame implements MouseListener {
 	private Image exit, caixa, robot;
 	int robotX, robotY, robotCap;
 	private ArrayList<Coord<Integer, Integer>> caixas;
-	private ArrayList<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>> paredes;
+	private ArrayList<Parede<Coord<Integer, Integer>, Coord<Integer, Integer>>> paredes;
 	
 	public static Container cont;
 	private JPanel armazem, objetos;
@@ -59,7 +62,7 @@ public class MenuSaida extends JFrame implements MouseListener {
 	 * @param paredes
 	 * @throws IOException
 	 */
-	public MenuSaida(int robotX, int robotY, int robotCap, ArrayList<Coord<Integer, Integer>> caixas, ArrayList<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>> paredes) throws IOException {
+	public MenuSaida(int robotX, int robotY, int robotCap, ArrayList<Coord<Integer, Integer>> caixas, ArrayList<Parede<Coord<Integer, Integer>, Coord<Integer, Integer>>> paredes) throws IOException {
 		super("Menu Saida");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
@@ -146,8 +149,10 @@ public class MenuSaida extends JFrame implements MouseListener {
 			dx = paredes.get(i).getY().getX();
 			dy = paredes.get(i).getY().getY();
 			
-			g.setColor(Color.WHITE);
-			g.drawLine(cx, cy, dx, dy);	
+			Graphics2D g2 = (Graphics2D) g;
+			g2.setColor(Color.WHITE);
+            g2.setStroke(new BasicStroke(5));
+            g2.draw(new Line2D.Float(cx, cy, dx, dy));
 			
 		}
 		
@@ -253,7 +258,7 @@ public class MenuSaida extends JFrame implements MouseListener {
 		
 		int y = arg0.getY();
 		
-		if (y <= 950) {		
+		if (y <= (int) (height*950) / (1080)) {		
 			
 			int x = arg0.getX();
 			

@@ -8,8 +8,12 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.swing.*;
+
+import projecto.Coord;
+import projecto.Parede;
 
 /**
  * MenuInicial.java - Classe responsavel pelo menu incial da vertente grafica do jogo
@@ -28,7 +32,7 @@ public class MenuInicial extends JFrame implements MouseListener {
 	 * Construtor padrao da classe
 	 */
 	public MenuInicial(){
-		super("Determincao do Trajeto de um Robot");
+		super("Determinacao do Trajeto de um Robot");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	
 		
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -93,7 +97,40 @@ public class MenuInicial extends JFrame implements MouseListener {
 		if ( e.getX() >= (int) (width*700) / (1920) && e.getX() <= (int) (width*1332) / (1011) ) {
 			if ( e.getY() >= (int) (height*431) / (1080) && e.getY() <= (int) (height*512) / (1080) ) {
 				try {
-					new MenuRobot();
+					int robotX, robotY, robotCap, saidaX, saidaY;
+					ArrayList<Coord<Integer, Integer>> caixas;
+					ArrayList<Parede<Coord<Integer, Integer>, Coord<Integer, Integer>>> paredes; 
+					
+					robotX = (int) (width*805) / (1920);
+					robotY = (int) (height*737) / (1080);
+					robotCap = 1;
+					saidaX = (int) (width*55) / (1920);
+					saidaY = (int) (height*73) / (1080);
+					
+					Coord<Integer, Integer> coord1 = new Coord<Integer, Integer>((int) (width*1062) / (1920), (int) (height*359) / (1080));
+					Coord<Integer, Integer> coord2 = new Coord<Integer, Integer>((int) (width*549) / (1920), (int) (height*456) / (1080));
+					Coord<Integer, Integer> coord3 = new Coord<Integer, Integer>((int) (width*131) / (1920), (int) (height*617) / (1080));
+					
+					caixas = new ArrayList<Coord<Integer, Integer>>();
+					caixas.add(coord1);
+					caixas.add(coord2);
+					caixas.add(coord3);
+					
+					
+					Coord<Integer, Integer> cd1 = new Coord<Integer, Integer>((int) (width*740) / (1920), (int) (height*272) / (1080));
+					Coord<Integer, Integer> cd2 = new Coord<Integer, Integer>((int) (width*1000) / (1920), (int) (height*723) / (1080));
+					Coord<Integer, Integer> cd3 = new Coord<Integer, Integer>((int) (width*253) / (1920), (int) (height*552) / (1080));
+					Coord<Integer, Integer> cd4 = new Coord<Integer, Integer>((int) (width*249) / (1920), (int) (height*701) / (1080));
+					
+					Parede<Coord<Integer, Integer>, Coord<Integer, Integer>> parede1 = new Parede<Coord<Integer, Integer>, Coord<Integer, Integer>>(cd1,cd2);
+					Parede<Coord<Integer, Integer>, Coord<Integer, Integer>> parede2 = new Parede<Coord<Integer, Integer>, Coord<Integer, Integer>>(cd3,cd4);
+					
+					paredes = new ArrayList<Parede<Coord<Integer, Integer>, Coord<Integer, Integer>>>();
+					paredes.add(parede1);
+					paredes.add(parede2);
+					
+					
+					new Percurso(robotX, robotY, robotCap, caixas, paredes, saidaX, saidaY);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

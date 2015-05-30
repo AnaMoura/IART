@@ -1,9 +1,11 @@
 package gui;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -11,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.Line2D;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -23,7 +26,7 @@ import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 
 import projecto.Coord;
-import projecto.Wall;
+import projecto.Parede;
 
 /**
  * MenuParedes.java - Classe responsavel pelo menu de configuracoes das paredes
@@ -38,7 +41,7 @@ public class MenuParedes extends JFrame implements MouseListener {
 
 	private JPanel jpall;
 	private int paredeP1X, paredeP1Y, paredeP2X, paredeP2Y, numeroParedes;
-	private ArrayList<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>> paredes;
+	private ArrayList<Parede<Coord<Integer, Integer>, Coord<Integer, Integer>>> paredes;
 	private JLabel paredeP1XLabel, paredeP1YLabel, paredeP2XLabel, paredeP2YLabel, numeroParedesLabel;
 	
 	public static Container cont;
@@ -98,7 +101,7 @@ public class MenuParedes extends JFrame implements MouseListener {
 		paredeP2X = 0;
 		paredeP2Y = 0;
 		
-		paredes = new ArrayList<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>>();
+		paredes = new ArrayList<Parede<Coord<Integer, Integer>, Coord<Integer, Integer>>>();
 
 		jpall = new JPanel();
 		initParedes();
@@ -141,9 +144,13 @@ public class MenuParedes extends JFrame implements MouseListener {
 		}
 		
 		if (paredeP1X != 0 && paredeP2X != 0) {
-			g.setColor(Color.WHITE);
-			g.drawLine(paredeP1X, paredeP1Y, paredeP2X, paredeP2Y);		
+			Graphics2D g2 = (Graphics2D) g;
+			g2.setColor(Color.WHITE);
+            g2.setStroke(new BasicStroke(5));
+            g2.draw(new Line2D.Float(paredeP1X, paredeP1Y, paredeP2X, paredeP2Y));
 		}
+		
+		
 		
 		for (int i = 0; i < paredes.size(); i++) {
 			
@@ -154,9 +161,10 @@ public class MenuParedes extends JFrame implements MouseListener {
 			dx = paredes.get(i).getY().getX();
 			dy = paredes.get(i).getY().getY();
 			
-			g.setColor(Color.WHITE);
-			g.drawLine(cx, cy, dx, dy);	
-			
+			Graphics2D g2 = (Graphics2D) g;
+			g2.setColor(Color.WHITE);
+            g2.setStroke(new BasicStroke(5));
+            g2.draw(new Line2D.Float(cx, cy, dx, dy));
 		}
 	}
 
@@ -211,7 +219,7 @@ public class MenuParedes extends JFrame implements MouseListener {
 							Coord<Integer, Integer> coord1 = new Coord<Integer, Integer>(paredeP1X, paredeP1Y);
 							Coord<Integer, Integer> coord2 = new Coord<Integer, Integer>(paredeP2X, paredeP2Y);
 							
-							Wall<Coord<Integer, Integer>, Coord<Integer, Integer>> parede = new Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>(coord1,coord2);
+							Parede<Coord<Integer, Integer>, Coord<Integer, Integer>> parede = new Parede<Coord<Integer, Integer>, Coord<Integer, Integer>>(coord1,coord2);
 							
 							paredes.add(parede);
 							numeroParedes++;
@@ -367,7 +375,7 @@ public class MenuParedes extends JFrame implements MouseListener {
 		
 		int y = arg0.getY();
 		
-		if (y <= 950) {		
+		if (y <= (int) (height*950) / (1080)) {		
 			int x = arg0.getX();
 			
 			if (paredeP1X == 0 ) {

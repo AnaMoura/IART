@@ -31,7 +31,7 @@ public class MyNode {
 	
 	public void setList(List<Integer> newList)
 	{
-		list = newList;
+		list = new ArrayList<Integer>(newList);
 	}
 	
 	public double getG()

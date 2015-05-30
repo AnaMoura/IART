@@ -19,7 +19,7 @@ public class ArvoreCaminhos
 	Coord<Integer, Integer> storage;
 	Comparator<MyNode> comparator = new MyComparator();
 	PriorityQueue<MyNode> queue = new PriorityQueue<MyNode>(10, comparator);
-	int capacity = 3;
+	int capacity = 4;
 	HashMap<String, PathNode> distances = new HashMap<String, PathNode>();
 
 
@@ -33,34 +33,34 @@ public class ArvoreCaminhos
 		walls = new ArrayList<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>>();
 		boxes = new ArrayList<Coord<Integer, Integer>>();
 
-		Coord<Integer, Integer> c1 = new Coord<Integer, Integer>(2,1);
+		Coord<Integer, Integer> c1 = new Coord<Integer, Integer>(0,15);
 		Coord<Integer, Integer> c2 = new Coord<Integer, Integer>(2,2);
 
-//		Wall<Coord<Integer, Integer>, Coord<Integer, Integer>> Wall = 
-//				new Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>(c1,c2);
-//		walls.add(Wall);
+		Wall<Coord<Integer, Integer>, Coord<Integer, Integer>> Wall = 
+				new Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>(c1,c2);
+		walls.add(Wall);
 //		c1 = new Coord<Integer, Integer>(30,80);
 //		c2 = new Coord<Integer, Integer>(50,80);
 //		Wall = new Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>(c1,c2);
 //		walls.add(Wall);
 
-		c1 = new Coord<Integer, Integer>(2,2);
+		c1 = new Coord<Integer, Integer>(20,20);
 		boxes.add(c1);
-		c1 = new Coord<Integer, Integer>(1,1);
+		c1 = new Coord<Integer, Integer>(10,10);
 		boxes.add(c1);
-//		c1 = new Coord<Integer, Integer>(2,3);
-//		boxes.add(c1);
-//		c1 = new Coord<Integer, Integer>(3,3);
-//		boxes.add(c1);
-//		c1 = new Coord<Integer, Integer>(1,2);
-//		boxes.add(c1);
-//		c1 = new Coord<Integer, Integer>(1,1);
-//		boxes.add(c1);
+		c1 = new Coord<Integer, Integer>(20,30);
+		boxes.add(c1);
+		c1 = new Coord<Integer, Integer>(30,30);
+		boxes.add(c1);
+		c1 = new Coord<Integer, Integer>(10,20);
+		boxes.add(c1);
+		c1 = new Coord<Integer, Integer>(10,10);
+		boxes.add(c1);
 //		c1 = new Coord<Integer, Integer>(50,70);
 //		boxes.add(c1);
 
 		startPoint = new Coord<Integer, Integer>(0,0);	
-		storage = new Coord<Integer, Integer>(5,5);
+		storage = new Coord<Integer, Integer>(50,50);
 	}
 
 	public PathNode realDistance(int index1, int index2)
@@ -79,16 +79,16 @@ public class ArvoreCaminhos
 		Coord<Integer, Integer> coord1, coord2;
 		if(index1 == -1)
 			coord1 = startPoint;
-		else if(index1 == -1)
+		else if(index1 == -2)
 			coord1 = storage;
 		else
 			coord1 = boxes.get(index1);
 		if(index2 == -1)
 			coord2 = startPoint;
-		else if(index2 == -1)
+		else if(index2 == -2)
 			coord2 = storage;
 		else
-			coord2 = boxes.get(index1);
+			coord2 = boxes.get(index2);
 		
 		List<Coord<Integer, Integer>> intersectedWalls = intersect(coord1, coord2);
 

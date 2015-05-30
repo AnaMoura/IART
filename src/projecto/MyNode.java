@@ -7,12 +7,11 @@ public class MyNode {
 	
 	double g = 0;
 	double h = 0;
-	double function = g + h;
 	List<Integer> list = new ArrayList<Integer>();
 
 	public double function()
 	{
-		return function;
+		return g+h;
 	}
 	
 	public void setG(double i)
@@ -32,7 +31,7 @@ public class MyNode {
 	
 	public void setList(List<Integer> newList)
 	{
-		list = newList;
+		list = new ArrayList<Integer>(newList);
 	}
 	
 	public double getG()

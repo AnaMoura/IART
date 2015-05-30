@@ -19,7 +19,7 @@ public class ArvoreCaminhos
 	Coord<Integer, Integer> storage;
 	Comparator<MyNode> comparator = new MyComparator();
 	PriorityQueue<MyNode> queue = new PriorityQueue<MyNode>(10, comparator);
-	int capacity = 1;
+	int capacity = 5;
 	HashMap<String, Integer> distancias = new HashMap<String, Integer>();
 
 
@@ -35,13 +35,14 @@ public class ArvoreCaminhos
 
 		Coord<Integer, Integer> c1 = new Coord<Integer, Integer>(15,0);
 		Coord<Integer, Integer> c2 = new Coord<Integer, Integer>(15,10);
-		Wall<Coord<Integer, Integer>, Coord<Integer, Integer>> Wall = 
+
+		/*Wall<Coord<Integer, Integer>, Coord<Integer, Integer>> Wall = 
 				new Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>(c1,c2);
 		walls.add(Wall);
 		c1 = new Coord<Integer, Integer>(17,5);
 		c2 = new Coord<Integer, Integer>(25,5);
 		Wall = new Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>(c1,c2);
-		walls.add(Wall);
+		walls.add(Wall);*/
 
 		c1 = new Coord<Integer, Integer>(10,0);
 		boxes.add(c1);
@@ -49,8 +50,11 @@ public class ArvoreCaminhos
 		boxes.add(c1);
 		c1 = new Coord<Integer, Integer>(20,0);
 		boxes.add(c1);
+		c1 = new Coord<Integer, Integer>(12,6);
+		boxes.add(c1);
 
 		startPoint = new Coord<Integer, Integer>(0,0);	
+		storage = new Coord<Integer, Integer>(5,5);
 	}
 
 	public double realDistance(Coord<Integer, Integer> a, Coord<Integer, Integer> b)
@@ -155,10 +159,12 @@ public class ArvoreCaminhos
 			node.setH(h);
 			//-------------------
 			node.addBoxIndex(-1);
+			node.addBoxIndex(i);
 			queue.add(node);
 		}
 		return queue;
 	}
+
 
 	/*
 	 * Função para verificar se todas as caixas foram apanhas e posição final é a do armazém
@@ -185,15 +191,26 @@ public class ArvoreCaminhos
 	public boolean maxCapacity(MyNode node)
 	{
 		boolean wentStorage = false;
-		for(int i = capacity; i > 0; i--)
+		for(int i = node.getList().size()-1 ; i >= node.getList().size()- capacity; i--)
+		{
 			if(node.getList().get(i) == -2)
+			{
 				wentStorage = true;
+				break;
+			}
+			if (i==0)
+			{
+				wentStorage = true;
+				break;
+			}
+		}
 		if (wentStorage)
 			return false;
 		else
 			return true;
 	}
 
+	
 	//-------------------------------------get Distance modificar para a distancia já previamente calculada
 	public MyNode aStar()
 	{
@@ -214,6 +231,7 @@ public class ArvoreCaminhos
 				double g = 0;
 				double h = 0;
 				MyNode node = new MyNode();
+				
 				g = lineDistance(boxes.get(lastElement), storage) + oldG;
 				node.setG(g);
 
@@ -259,7 +277,7 @@ public class ArvoreCaminhos
 						{
 							if(!node.getList().contains(j))
 							{
-								double d = lineDistance(boxes.get(lastElement+1), boxes.get(j)) + lineDistance(boxes.get(j), storage);
+								double d = lineDistance(boxes.get(i), boxes.get(j)) + lineDistance(boxes.get(j), storage);
 								if(d > h)
 									h = d;
 							}
@@ -294,7 +312,7 @@ public class ArvoreCaminhos
 						}
 					}
 					node.setH(h);
-
+					
 					queue.add(node);
 				}		
 			}

@@ -23,7 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 
 import projecto.Coord;
-import projecto.Parede;
+import projecto.Wall;
 
 /**
  * Percurso.java - Classe responsavel pela representacao do trajecto do robot
@@ -39,7 +39,7 @@ public class Percurso extends JFrame implements MouseListener {
 	private JPanel jpall;
 	int robotX, robotY, robotCap;
 	private ArrayList<Coord<Integer, Integer>> caixas;
-	private ArrayList<Parede<Coord<Integer, Integer>, Coord<Integer, Integer>>> paredes;
+	private ArrayList<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>> paredes;
 	private int saidaX, saidaY;
 	
 	public static Container cont;
@@ -62,7 +62,7 @@ public class Percurso extends JFrame implements MouseListener {
 	 * @param saidaY
 	 * @throws IOException
 	 */
-	public Percurso(int robotX, int robotY, int robotCap, ArrayList<Coord<Integer, Integer>> caixas, ArrayList<Parede<Coord<Integer, Integer>, Coord<Integer, Integer>>> paredes, int saidaX, int saidaY) throws IOException {
+	public Percurso(int robotX, int robotY, int robotCap, ArrayList<Coord<Integer, Integer>> caixas, ArrayList<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>> paredes, int saidaX, int saidaY) throws IOException {
 		super("Menu Caixas");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		

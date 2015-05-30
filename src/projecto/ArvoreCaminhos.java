@@ -36,13 +36,13 @@ public class ArvoreCaminhos
 		Coord<Integer, Integer> c1 = new Coord<Integer, Integer>(15,0);
 		Coord<Integer, Integer> c2 = new Coord<Integer, Integer>(15,10);
 
-		/*Wall<Coord<Integer, Integer>, Coord<Integer, Integer>> Wall = 
+		Wall<Coord<Integer, Integer>, Coord<Integer, Integer>> Wall = 
 				new Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>(c1,c2);
 		walls.add(Wall);
 		c1 = new Coord<Integer, Integer>(17,5);
 		c2 = new Coord<Integer, Integer>(25,5);
 		Wall = new Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>(c1,c2);
-		walls.add(Wall);*/
+		walls.add(Wall);
 
 		c1 = new Coord<Integer, Integer>(10,0);
 		boxes.add(c1);
@@ -399,7 +399,7 @@ public class ArvoreCaminhos
 					{
 						if(!node.getList().contains(j))
 						{
-							double d = lineDistance(storage, boxes.get(j)) + lineDistance(boxes.get(j), storage);
+							double d = realDistance(-2, j).getG() + realDistance(j, -2).getG();
 							if(d > h)
 								h = d;
 						}

@@ -20,7 +20,7 @@ public class ArvoreCaminhos
 	Comparator<MyNode> comparator = new MyComparator();
 	PriorityQueue<MyNode> queue = new PriorityQueue<MyNode>(10, comparator);
 	int capacity = 5;
-	HashMap<String, Integer> distancias = new HashMap<String, Integer>();
+	HashMap<String, PathNode> distances = new HashMap<String, PathNode>();
 
 
 	public void inserirDados ()
@@ -57,17 +57,41 @@ public class ArvoreCaminhos
 		storage = new Coord<Integer, Integer>(5,5);
 	}
 
-	public PathNode realDistance(Coord<Integer, Integer> a, Coord<Integer, Integer> b)
+	public PathNode realDistance(int index1, int index2)
 	{
-		List<Coord<Integer, Integer>> intersectedWalls = intersect(a, b);
+		PathNode node = null;
+		
+		String key = index1 + "," + index2;
+		node = distances.get(key);
+		if(node != null)
+			return node;
+		key = index2 + "," + index1;
+		node = distances.get(key);
+		if(node != null)
+			return node;
 
-		PathNode node;
+		Coord<Integer, Integer> coord1, coord2;
+		if(index1 == -1)
+			coord1 = startPoint;
+		else if(index1 == -1)
+			coord1 = storage;
+		else
+			coord1 = boxes.get(index1);
+		if(index2 == -1)
+			coord2 = startPoint;
+		else if(index2 == -1)
+			coord2 = storage;
+		else
+			coord2 = boxes.get(index1);
+		
+		List<Coord<Integer, Integer>> intersectedWalls = intersect(coord1, coord2);
+
 		if(intersectedWalls.size() == 0)
 		{
-			int ax = a.getX();
-			int ay = a.getY();
-			int bx = b.getX();
-			int by = b.getY();
+			int ax = coord1.getX();
+			int ay = coord1.getY();
+			int bx = coord2.getX();
+			int by = coord2.getY();
 
 			double g = Math.sqrt((bx-ax)*(bx-ax)+(by-ay)*(by-ay));
 			node = new PathNode();
@@ -75,7 +99,7 @@ public class ArvoreCaminhos
 		}
 		else
 		{
-			node = aStar(a, b, intersectedWalls);
+			node = aStar(coord1, coord2, intersectedWalls);
 		}
 		return node;
 	}
@@ -282,7 +306,6 @@ public class ArvoreCaminhos
 		else
 			return true;
 	}
-
 	
 	//-------------------------------------get Distance modificar para a distancia já previamente calculada
 	public MyNode aStar()
@@ -305,7 +328,7 @@ public class ArvoreCaminhos
 				double h = 0;
 				MyNode node = new MyNode();
 				
-				g = lineDistance(boxes.get(lastElement), storage) + oldG;
+				g = realDistance(lastElement, -2).getG() + oldG;
 				node.setG(g);
 
 				node.setList(oldList);
@@ -317,7 +340,7 @@ public class ArvoreCaminhos
 				{
 					if(!node.getList().contains(j))
 					{
-						double d = lineDistance(storage, boxes.get(j)) + lineDistance(boxes.get(j), storage);
+						double d = realDistance(-2, j).getG() + realDistance(j, -2).getG();
 						if(d > h)
 							h = d;
 					}
@@ -337,10 +360,7 @@ public class ArvoreCaminhos
 						double h =0;
 
 						MyNode node = new MyNode();
-						if(lastElement == -2)
-							g = lineDistance(storage, boxes.get(i)) + oldG;
-						else
-							g = lineDistance(boxes.get(lastElement), boxes.get(i)) + oldG; 
+						g = realDistance(lastElement, i).getG() + oldG; 
 						node.setG(g);
 
 						node.setList(oldList);
@@ -350,7 +370,7 @@ public class ArvoreCaminhos
 						{
 							if(!node.getList().contains(j))
 							{
-								double d = lineDistance(boxes.get(i), boxes.get(j)) + lineDistance(boxes.get(j), storage);
+								double d = realDistance(i, j).getG() + realDistance(j, -2).getG();
 								if(d > h)
 									h = d;
 							}
@@ -367,7 +387,7 @@ public class ArvoreCaminhos
 					double g = 0;
 					double h = 0;
 					MyNode node = new MyNode();
-					g = lineDistance(boxes.get(lastElement), storage) + oldG;
+					g = realDistance(lastElement, -2).getG() + oldG;
 					node.setG(g);
 
 					node.setList(oldList);

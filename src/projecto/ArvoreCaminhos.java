@@ -19,7 +19,7 @@ public class ArvoreCaminhos
 	Coord<Integer, Integer> storage;
 	Comparator<MyNode> comparator = new MyComparator();
 	PriorityQueue<MyNode> queue = new PriorityQueue<MyNode>(10, comparator);
-	int capacity = 5;
+	int capacity = 3;
 	HashMap<String, PathNode> distances = new HashMap<String, PathNode>();
 
 
@@ -33,25 +33,31 @@ public class ArvoreCaminhos
 		walls = new ArrayList<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>>();
 		boxes = new ArrayList<Coord<Integer, Integer>>();
 
-		Coord<Integer, Integer> c1 = new Coord<Integer, Integer>(15,0);
-		Coord<Integer, Integer> c2 = new Coord<Integer, Integer>(15,10);
+		Coord<Integer, Integer> c1 = new Coord<Integer, Integer>(2,1);
+		Coord<Integer, Integer> c2 = new Coord<Integer, Integer>(2,2);
 
-		Wall<Coord<Integer, Integer>, Coord<Integer, Integer>> Wall = 
-				new Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>(c1,c2);
-		walls.add(Wall);
-		c1 = new Coord<Integer, Integer>(17,5);
-		c2 = new Coord<Integer, Integer>(25,5);
-		Wall = new Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>(c1,c2);
-		walls.add(Wall);
+//		Wall<Coord<Integer, Integer>, Coord<Integer, Integer>> Wall = 
+//				new Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>(c1,c2);
+//		walls.add(Wall);
+//		c1 = new Coord<Integer, Integer>(30,80);
+//		c2 = new Coord<Integer, Integer>(50,80);
+//		Wall = new Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>(c1,c2);
+//		walls.add(Wall);
 
-		c1 = new Coord<Integer, Integer>(10,0);
+		c1 = new Coord<Integer, Integer>(2,2);
 		boxes.add(c1);
-		c1 = new Coord<Integer, Integer>(20,10);
+		c1 = new Coord<Integer, Integer>(1,1);
 		boxes.add(c1);
-		c1 = new Coord<Integer, Integer>(20,0);
-		boxes.add(c1);
-		c1 = new Coord<Integer, Integer>(12,6);
-		boxes.add(c1);
+//		c1 = new Coord<Integer, Integer>(2,3);
+//		boxes.add(c1);
+//		c1 = new Coord<Integer, Integer>(3,3);
+//		boxes.add(c1);
+//		c1 = new Coord<Integer, Integer>(1,2);
+//		boxes.add(c1);
+//		c1 = new Coord<Integer, Integer>(1,1);
+//		boxes.add(c1);
+//		c1 = new Coord<Integer, Integer>(50,70);
+//		boxes.add(c1);
 
 		startPoint = new Coord<Integer, Integer>(0,0);	
 		storage = new Coord<Integer, Integer>(5,5);

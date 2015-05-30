@@ -33,8 +33,8 @@ public class ArvoreCaminhos
 		walls = new ArrayList<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>>();
 		boxes = new ArrayList<Coord<Integer, Integer>>();
 
-		Coord<Integer, Integer> c1 = new Coord<Integer, Integer>(0,15);
-		Coord<Integer, Integer> c2 = new Coord<Integer, Integer>(2,2);
+		Coord<Integer, Integer> c1 = new Coord<Integer, Integer>(5,15);
+		Coord<Integer, Integer> c2 = new Coord<Integer, Integer>(15,15);
 
 		Wall<Coord<Integer, Integer>, Coord<Integer, Integer>> Wall = 
 				new Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>(c1,c2);

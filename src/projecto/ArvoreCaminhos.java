@@ -22,7 +22,7 @@ public class ArvoreCaminhos
 	int capacity = 4;
 	HashMap<String, PathNode> distances = new HashMap<String, PathNode>();
 
-	ArvoreCaminhos(int robotX, int robotY, int robotCap, ArrayList<Coord<Integer, Integer>> caixas,
+	public ArvoreCaminhos(int robotX, int robotY, int robotCap, ArrayList<Coord<Integer, Integer>> caixas,
 			ArrayList<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>> paredes, int saidaX, int saidaY)
 	{
 		startPoint = new Coord<Integer, Integer>(robotX, robotY);

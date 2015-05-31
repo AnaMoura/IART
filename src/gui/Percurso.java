@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+import projecto.ArvoreCaminhos;
 import projecto.Coord;
 import projecto.Wall;
 
@@ -220,6 +221,7 @@ public class Percurso extends JFrame implements MouseListener{
     	 */
     	private void calcula() {
     		percurso = new ArrayList<Coord<Integer, Integer>>();
+    		ArvoreCaminhos arvoreCaminhos = new ArvoreCaminhos(robX, robY, robotCap, caixas, paredes, saidaX, saidaY);
     		//percurso = func(robotX, robotY, robotCap, caixas, paredes, saidaX, saidaY)
     			
     		Coord<Integer, Integer> c1 = new Coord<Integer, Integer>(10,10);
@@ -267,7 +269,7 @@ public class Percurso extends JFrame implements MouseListener{
 			
 			g.drawImage(exit, saidaX-50, saidaY-50,	100, 100, this);   
 			
-			if (path1x != 0 && path1y != 0 && !stopped) {
+			if (path1x != 0 && path1y != 0 && !stopped && path1x != robX) {
 				Graphics2D g2 = (Graphics2D) g;
 				g2.setColor(Color.GREEN);
 	            g2.setStroke(new BasicStroke(7));

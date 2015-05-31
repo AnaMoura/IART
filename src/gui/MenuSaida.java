@@ -187,12 +187,7 @@ public class MenuSaida extends JFrame implements MouseListener {
 
 						if (n == 0) {
 								setVisible(false);
-								try {
-									new Percurso(robotX, robotY, robotCap, caixas, paredes, saidaX, saidaY);
-								} catch (IOException e1) {
-									// TODO Auto-generated catch block
-									e1.printStackTrace();
-								}
+								new Percurso(robotX, robotY, robotCap, caixas, paredes, saidaX, saidaY);
 						}
 				}
 				

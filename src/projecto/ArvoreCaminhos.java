@@ -31,7 +31,7 @@ public class ArvoreCaminhos
 		walls = paredes;
 		storage = new Coord<Integer, Integer>(saidaX, saidaY);
 	}
-	
+
 	public ArvoreCaminhos() {
 	}
 
@@ -161,22 +161,22 @@ public class ArvoreCaminhos
 			}
 			else
 			{
-				double m, c;
-				m = (y2-y1)/(x2-x1);
+				float m, c;
+				m = ((float)(y2-y1))/(x2-x1);
 				c = y1 - x1*m;
 				if(x1 > x2)
 				{
 					x1 += 1;
-					y1 = (int) Math.ceil(x1 * m + c);
+					y1 = (int) Math.floor(c + x1 * m);
 					x2 -= 1;
-					y2 = (int) Math.floor(x2 * m + c);
+					y2 = (int) Math.ceil(c + x2 * m);
 				}
 				else
 				{
 					x1 -= 1;
-					y1 = (int) Math.floor(x1 * m + c);
+					y1 = (int) Math.ceil(c + x1 * m);
 					x2 += 1;
-					y2 = (int) Math.ceil(x2 * m + c);
+					y2 = (int) Math.floor(c + x2 * m);
 				}
 			}
 
@@ -390,15 +390,25 @@ public class ArvoreCaminhos
 		for(int i = 0; i < boxes.size(); i++)
 		{
 			MyNode node = new MyNode();
-			double g = lineDistance(boxes.get(i), startPoint);
+			PathNode n = realDistance(i, -1);
 
-			node.setG(g);
-			//-------------------Como fazer set da heuristica eu nao sei gg ---
-			double h =0;
-			node.setH(h);
-			//-------------------
+			node.setG(n.getG());
 			node.addBoxIndex(-1);
 			node.addBoxIndex(i);
+
+			double h = 0;
+
+			for(int j = 0; j < boxes.size(); j++)
+			{
+				if(!node.getList().contains(j))
+				{
+					double d = realDistance(i, j).getG() + realDistance(j, -2).getG();
+					if(d > h)
+						h = d;
+				}
+			}
+			node.setH(h);
+
 			queue.add(node);
 		}
 		return queue;

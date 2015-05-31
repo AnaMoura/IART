@@ -30,7 +30,6 @@ public class Percurso extends JFrame implements MouseListener{
 	private double width, height;
 	private Image caixa, robot, exit;
 	private JLabel distanciaLabel;
-	private ArrayList<Double> distanciaPercorrida;
 	private double totalDist;
 	JFrame frame;
 
@@ -257,6 +256,10 @@ public class Percurso extends JFrame implements MouseListener{
 				{
 					percurso.add(caixas.get(index));
 					System.out.println("Going to box: " + index);
+					
+					Coord<Integer, Integer> c1 = caixas.get(index);
+					totalDist += caminho.lineDistance(old, c1);
+					old = c1;
 				}
 				String key = index + "," + list.get(i+1);
 				PathNode n = caminho.getMap().get(key);
@@ -301,7 +304,7 @@ public class Percurso extends JFrame implements MouseListener{
 			System.out.println("Total Distance:" + totalDist);
 			
 		}
-
+		
 
 		@Override
 		protected void paintComponent(Graphics g) {

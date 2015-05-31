@@ -23,11 +23,6 @@ public class ArvoreCaminhos
 	HashMap<String, PathNode> distances = new HashMap<String, PathNode>();
 
 
-	public void inserirDados ()
-	{
-		//-.-
-
-	}
 	public void init()
 	{
 		walls = new ArrayList<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>>();

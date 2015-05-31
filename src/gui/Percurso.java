@@ -281,8 +281,6 @@ public class Percurso extends JFrame implements MouseListener{
 		protected void paintComponent(Graphics g) {
 			super.paintComponent(g);
 
-			g.drawImage(robot, robX-37, robY-49,	100, 100, this);
-
 			for (int i = 0; i < caixas.size(); i++) {
 
 				int cx, cy;
@@ -318,6 +316,8 @@ public class Percurso extends JFrame implements MouseListener{
 				g2.setStroke(new BasicStroke(7));
 				g2.draw(new Line2D.Float(path1x, path1y, robX, robY));
 			}
+			
+			g.drawImage(robot, robX-37, robY-49,	100, 100, this);
 
 		}
 

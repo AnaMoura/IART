@@ -231,7 +231,6 @@ public class Percurso extends JFrame implements MouseListener{
 			node = caminho.aStar();
 			list = node.getList();
 			Coord<Integer, Integer> old = new Coord<Integer, Integer>(0,0);
-			distanciaPercorrida = new ArrayList<Double>();
 			
 			totalDist = 0;
 
@@ -296,7 +295,7 @@ public class Percurso extends JFrame implements MouseListener{
 			percurso.add(new Coord<Integer, Integer>(saidaX, saidaY));
 			
 			Coord<Integer, Integer> c1 = new Coord<Integer, Integer>(saidaX,saidaY);
-			distanciaPercorrida.add(caminho.lineDistance(old, c1));
+			totalDist += caminho.lineDistance(old, c1);
 			
 			System.out.println("Going to storage.");
 			System.out.println("Total Distance:" + totalDist);

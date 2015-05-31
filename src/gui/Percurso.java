@@ -166,7 +166,8 @@ public class Percurso extends JFrame implements MouseListener{
     	private ArrayList<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>> paredes;
     	private ArrayList<Coord<Integer, Integer>> percurso;
     	private int saidaX, saidaY;
-    	private int coordx, coordy, counter, path1x, path1y, path2x, path2y;
+    	private int counter, path1x, path1y;
+    	private boolean stopped;
 
         public AnimationPane(int robotX, int robotY, int robotCap, ArrayList<Coord<Integer, Integer>> caixas, ArrayList<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>> paredes, int saidaX, int saidaY) {
             try {
@@ -180,6 +181,7 @@ public class Percurso extends JFrame implements MouseListener{
         		this.saidaY = saidaY;
         		distanciaPercorrida = 0;
         		counter = 0;
+        		stopped = false;
         		
             	robot = ImageIO.read(new File("imagens/robot.png"));
             	caixa = ImageIO.read(new File("imagens/caixa.png"));
@@ -187,46 +189,26 @@ public class Percurso extends JFrame implements MouseListener{
             	
             	calcula();
             	
-                Timer timer = new Timer(10, new ActionListener() {
+                Timer timer = new Timer(2000, new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                     	
                     	if (counter < percurso.size()) {
-	                    	coordx = percurso.get(counter).getX();
-	            			coordy = percurso.get(counter).getY();
-	            			
-	        				if (robX < coordx) {
-	        					robX++;
-	        					repaint();
-	        				}
+                    		robX = percurso.get(counter).getX();
+                    		robY = percurso.get(counter).getY();
 	        				
-	        				if (robX > coordx) {
-	        					robX--;
-	        					repaint();
-	        				}
-	        				
-	        				if (robY < coordy) {
-	        					robY++;
-	        					repaint();
-	        				}
-	        				
-	        				if (robY > coordy) {
-	        					robY--;
-	        					repaint();
-	        				}
-	            			
-	        				if (robX == coordx && robY == coordy) {
-	        					counter++;
-	        					
-	        					if (counter < percurso.size()) {
-		        					path1x = percurso.get(counter-1).getX();
-		        					path1y = percurso.get(counter-1).getY();
-	        					}
-	        					repaint();
-	        					
-	        				}
-	                    	
+                    		if (counter != percurso.size()-1) {
+		        				path1x = percurso.get(counter+1).getX();
+		        				path1y = percurso.get(counter+1).getY();
+	        				} 
+                    		
 	                        repaint();
+                    		counter++;    
+                    	}
+                    	
+                    	else {
+                    		stopped = true;
+                    		repaint();
                     	}
                     }
 
@@ -291,10 +273,12 @@ public class Percurso extends JFrame implements MouseListener{
 			
 			g.drawImage(exit, saidaX-50, saidaY-50,	100, 100, this);   
 			
-			Graphics2D g2 = (Graphics2D) g;
-			g2.setColor(Color.GREEN);
-            g2.setStroke(new BasicStroke(7));
-            g2.draw(new Line2D.Float(path1x, path1y, coordx, coordy));
+			if (path1x != 0 && path1y != 0 && !stopped) {
+				Graphics2D g2 = (Graphics2D) g;
+				g2.setColor(Color.GREEN);
+	            g2.setStroke(new BasicStroke(7));
+	            g2.draw(new Line2D.Float(path1x, path1y, robX, robY));
+			}
 	
 	        }
 

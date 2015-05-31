@@ -275,7 +275,7 @@ public class MenuParedes extends JFrame implements MouseListener {
 						
 						Object[] options = { "Sim", "Não", "Cancelar" };
 						int n = JOptionPane.showOptionDialog(null,
-								"Deseja avançar para a selecção de paredes? ",
+								"Deseja avançar para a selecção da saida? ",
 								"Avançar", JOptionPane.YES_NO_CANCEL_OPTION,
 								JOptionPane.QUESTION_MESSAGE, null, options,
 								options[2]);

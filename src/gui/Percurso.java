@@ -224,7 +224,6 @@ public class Percurso extends JFrame implements MouseListener{
     		ArvoreCaminhos caminho = new ArvoreCaminhos(robX, robY, robotCap, caixas, paredes, saidaX, saidaY);
     		MyNode node = new MyNode();
     		List<Integer> list;
-    		caminho.init();
     		caminho.setNodes();
     		node = caminho.aStar();
     		list = node.getList();

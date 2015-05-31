@@ -30,7 +30,8 @@ public class Percurso extends JFrame implements MouseListener{
 	private double width, height;
 	private Image caixa, robot, exit;
 	private JLabel distanciaLabel;
-	private int distanciaPercorrida;
+	private ArrayList<Double> distanciaPercorrida;
+	private double totalDist;
 	JFrame frame;
 
 	public Percurso(final int robotX, final int robotY, final int robotCap, final ArrayList<Coord<Integer, Integer>> caixas, final ArrayList<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>> paredes, final int saidaX, final int saidaY) {
@@ -142,7 +143,7 @@ public class Percurso extends JFrame implements MouseListener{
 			 * Inicializa os labels
 			 */
 			private void initDist() {
-				distanciaLabel = new JLabel("Distancia Percorrida: " + distanciaPercorrida);
+				distanciaLabel = new JLabel("Distancia Percorrida: " + totalDist);
 
 				jpall.add(distanciaLabel);
 
@@ -173,7 +174,6 @@ public class Percurso extends JFrame implements MouseListener{
 				this.paredes = paredes;
 				this.saidaX = saidaX;
 				this.saidaY = saidaY;
-				distanciaPercorrida = 0;
 				counter = 0;
 				stopped = false;
 
@@ -186,7 +186,9 @@ public class Percurso extends JFrame implements MouseListener{
 				Timer timer = new Timer(2000, new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-
+						
+						distanciaLabel.setText(String.valueOf("Distancia Percorrida: " + totalDist));
+						
 						if (counter < percurso.size()) {
 							robX = percurso.get(counter).getX();
 							robY = percurso.get(counter).getY();
@@ -204,6 +206,7 @@ public class Percurso extends JFrame implements MouseListener{
 							stopped = true;
 							repaint();
 						}
+		
 					}
 
 				});
@@ -227,6 +230,10 @@ public class Percurso extends JFrame implements MouseListener{
 			caminho.setNodes();
 			node = caminho.aStar();
 			list = node.getList();
+			Coord<Integer, Integer> old = new Coord<Integer, Integer>(0,0);
+			distanciaPercorrida = new ArrayList<Double>();
+			
+			totalDist = 0;
 
 			for(int i = 0; i < list.size()-1; i++)
 			{
@@ -235,11 +242,17 @@ public class Percurso extends JFrame implements MouseListener{
 				{
 					percurso.add(new Coord<Integer, Integer>(robX, robY));
 					System.out.println("At the start point.");
+					old = new Coord<Integer, Integer>(robX,robY);
 				}
 				else if(index == -2)
 				{
 					percurso.add(new Coord<Integer, Integer>(saidaX, saidaY));
 					System.out.println("At full capacity going to the storage.");
+					
+					Coord<Integer, Integer> c1 = new Coord<Integer, Integer>(saidaX,saidaY);
+					
+					totalDist += caminho.lineDistance(old, c1);
+					old = new Coord<Integer, Integer>(saidaX,saidaY);
 				}
 				else
 				{
@@ -256,6 +269,10 @@ public class Percurso extends JFrame implements MouseListener{
 						System.out.println("Going to coord: " + vertexList.get(j).getX() + "," + vertexList.get(j).getY());
 						Coord<Integer, Integer> c1 = new Coord<Integer, Integer>(vertexList.get(j).getX(),vertexList.get(j).getY());
 						percurso.add(c1);
+						
+						totalDist += caminho.lineDistance(old, c1);;
+						
+						old = c1;
 					}
 				}
 				key = list.get(i+1) + "," + index;
@@ -268,12 +285,22 @@ public class Percurso extends JFrame implements MouseListener{
 						System.out.println("Going to coord: " + vertexList.get(j).getX() + "," + vertexList.get(j).getY());
 						Coord<Integer, Integer> c1 = new Coord<Integer, Integer>(vertexList.get(j).getX(),vertexList.get(j).getY());
 						percurso.add(c1);
+						
+						totalDist += caminho.lineDistance(old, c1);
+						
+						old = c1;
 
 					}
 				}
 			}
 			percurso.add(new Coord<Integer, Integer>(saidaX, saidaY));
+			
+			Coord<Integer, Integer> c1 = new Coord<Integer, Integer>(saidaX,saidaY);
+			distanciaPercorrida.add(caminho.lineDistance(old, c1));
+			
 			System.out.println("Going to storage.");
+			System.out.println("Total Distance:" + totalDist);
+			
 		}
 
 

@@ -103,12 +103,6 @@ public class Percurso extends JFrame implements MouseListener{
 
         						if (n == 0) {
         							frame.setVisible(false);
-        							try {
-        								new MenuRobot();
-        							} catch (IOException e1) {
-        								// TODO Auto-generated catch block
-        								e1.printStackTrace();
-        							}
         						}
 
         			}

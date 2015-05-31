@@ -32,6 +32,9 @@ public class ArvoreCaminhos
 		storage = new Coord<Integer, Integer>(saidaX, saidaY);
 	}
 	
+	public ArvoreCaminhos() {
+	}
+
 	public void init()
 	{
 		walls = new ArrayList<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>>();

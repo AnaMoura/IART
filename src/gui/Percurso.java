@@ -10,13 +10,12 @@ import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-import projecto.ArvoreCaminhos;
-import projecto.Coord;
-import projecto.Wall;
+import projecto.*;
 
 
 public class Percurso extends JFrame implements MouseListener{
@@ -221,15 +220,55 @@ public class Percurso extends JFrame implements MouseListener{
     	 */
     	private void calcula() {
     		percurso = new ArrayList<Coord<Integer, Integer>>();
-    		ArvoreCaminhos arvoreCaminhos = new ArvoreCaminhos(robX, robY, robotCap, caixas, paredes, saidaX, saidaY);
-    		//percurso = func(robotX, robotY, robotCap, caixas, paredes, saidaX, saidaY)
+    		
+    		ArvoreCaminhos caminho = new ArvoreCaminhos(robX, robY, robotCap, caixas, paredes, saidaX, saidaY);
+    		MyNode node = new MyNode();
+    		List<Integer> list;
+    		caminho.init();
+    		caminho.setNodes();
+    		node = caminho.aStar();
+    		list = node.getList();
+    		
+    		System.out.println("At the start point.");
+    		for(int i = 1; i < list.size()-1; i++)
+    		{
+    			if(list.get(i) != -2)
+    				System.out.println("Going to box: " + list.get(i));
+    			else
+    				System.out.println("At full capacity going to the storage.");
+    			String key = list.get(i) + "," + list.get(i+1);
+    			PathNode n = caminho.getMap().get(key);
+    			if(n != null)
+    			{
+    		    	List<Coord<Integer, Integer>> vertexList = n.getPath();
+    				for(int j = 0; j < vertexList.size(); j++)
+    				{
+    					System.out.println("Going to coord: " + vertexList.get(j).getX() + "," + vertexList.get(j).getY());
+    				}
+    			}
+    			key = list.get(i+1) + "," + list.get(i);
+    			n = caminho.getMap().get(key);
+    			if(n != null)
+    			{
+    				List<Coord<Integer, Integer>> vertexList = n.getPath();
+    				for(int j = vertexList.size()-1; j >= 0; j--)
+    				{
+    					System.out.println("Going to coord: " + vertexList.get(j).getX() + "," + vertexList.get(j).getY());
+    					Coord<Integer, Integer> c1 = new Coord<Integer, Integer>(vertexList.get(j).getX(),vertexList.get(j).getY());
+    		    		percurso.add(c1);
+    					
+    				}
+    			}
+    		}
+    		System.out.println("Going to storage.");
+    	
     			
-    		Coord<Integer, Integer> c1 = new Coord<Integer, Integer>(10,10);
+    		/*Coord<Integer, Integer> c1 = new Coord<Integer, Integer>(10,10);
     		percurso.add(c1);
     		Coord<Integer, Integer> c2 = new Coord<Integer, Integer>(200,100);
     		percurso.add(c2);
     		Coord<Integer, Integer> c3 = new Coord<Integer, Integer>(600,700);
-    		percurso.add(c3);
+    		percurso.add(c3);*/
     		
     	}
 

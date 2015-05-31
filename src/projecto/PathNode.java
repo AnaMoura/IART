@@ -7,7 +7,7 @@ public class PathNode {
 	
 	double g = 0;
 	double h = 0;
-	List<Coord<Integer, Integer>> path;
+	List<Coord<Integer, Integer>> path = new ArrayList<Coord<Integer, Integer>>();
 
 	public double function()
 	{

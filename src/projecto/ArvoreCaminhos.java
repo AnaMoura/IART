@@ -39,10 +39,10 @@ public class ArvoreCaminhos
 		Wall<Coord<Integer, Integer>, Coord<Integer, Integer>> Wall = 
 				new Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>(c1,c2);
 		walls.add(Wall);
-//		c1 = new Coord<Integer, Integer>(30,80);
-//		c2 = new Coord<Integer, Integer>(50,80);
-//		Wall = new Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>(c1,c2);
-//		walls.add(Wall);
+		c1 = new Coord<Integer, Integer>(15,15);
+		c2 = new Coord<Integer, Integer>(15,40);
+		Wall = new Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>(c1,c2);
+		walls.add(Wall);
 
 		c1 = new Coord<Integer, Integer>(20,20);
 		boxes.add(c1);
@@ -56,8 +56,8 @@ public class ArvoreCaminhos
 		boxes.add(c1);
 		c1 = new Coord<Integer, Integer>(10,10);
 		boxes.add(c1);
-//		c1 = new Coord<Integer, Integer>(50,70);
-//		boxes.add(c1);
+		//		c1 = new Coord<Integer, Integer>(50,70);
+		//		boxes.add(c1);
 
 		startPoint = new Coord<Integer, Integer>(0,0);	
 		storage = new Coord<Integer, Integer>(50,50);
@@ -66,7 +66,7 @@ public class ArvoreCaminhos
 	public PathNode realDistance(int index1, int index2)
 	{
 		PathNode node = null;
-		
+
 		String key = index1 + "," + index2;
 		node = distances.get(key);
 		if(node != null)
@@ -89,8 +89,8 @@ public class ArvoreCaminhos
 			coord2 = storage;
 		else
 			coord2 = boxes.get(index2);
-		
-		List<Coord<Integer, Integer>> intersectedWalls = intersect(coord1, coord2);
+
+		List<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>> intersectedWalls = intersect(coord1, coord2);
 
 		if(intersectedWalls.size() == 0)
 		{
@@ -102,23 +102,90 @@ public class ArvoreCaminhos
 			double g = Math.sqrt((bx-ax)*(bx-ax)+(by-ay)*(by-ay));
 			node = new PathNode();
 			node.setG(g);
+			distances.put(key, node);
 		}
 		else
 		{
 			node = aStar(coord1, coord2, intersectedWalls);
+			distances.put(key, node);
 		}
 		return node;
 	}
 
 	private PathNode aStar(Coord<Integer, Integer> a, Coord<Integer, Integer> b,
-			List<Coord<Integer, Integer>> intersectedWalls)
+			List<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>> intersectedWalls)
 	{
 		Comparator<PathNode> coordComparator = new CoordComparator();
 		PriorityQueue<PathNode> coordQueue = new PriorityQueue<PathNode>(10, coordComparator);
 
 		for(int i = 0; i < intersectedWalls.size(); i++)
 		{
-			Coord<Integer, Integer> coord = intersectedWalls.get(i);
+			int x1, x2, y1, y2;
+			x1 = intersectedWalls.get(i).getX().getX();
+			y1 = intersectedWalls.get(i).getX().getY();
+			x2 = intersectedWalls.get(i).getY().getX();
+			y2 = intersectedWalls.get(i).getY().getY();
+
+			if(x1 == x2)
+			{
+				if(y1 > y2)
+				{
+					y1 += 1;
+					y2 -= 1;
+				}
+				else
+				{
+					y1 -= 1;
+					y2 += 1;
+				}
+			}
+			else if(y1 == y2)
+			{
+				if(x1 > x2)
+				{
+					x1 += 1;
+					x2 -= 1;
+				}
+				else
+				{
+					x1 -= 1;
+					x2 += 1;
+				}
+			}
+			else
+			{
+				double m, c;
+				m = (y2-y1)/(x2-x1);
+				c = y1 - x1*m;
+				if(x1 > x2)
+				{
+					x1 += 1;
+					y1 = (int) Math.ceil(x1 * m + c);
+					x2 -= 1;
+					y2 = (int) Math.floor(x2 * m + c);
+				}
+				else
+				{
+					x1 -= 1;
+					y1 = (int) Math.floor(x1 * m + c);
+					x2 += 1;
+					y2 = (int) Math.ceil(x2 * m + c);
+				}
+			}
+
+			Coord<Integer, Integer> coord = new Coord<Integer, Integer>(x1, y1);
+			if(intersect(a, coord).size() == 0)
+			{
+				double g, h;
+				PathNode node = new PathNode();
+				node.addCoord(coord);
+				g = lineDistance(a, coord);
+				h = lineDistance(coord, b);
+				node.setG(g);
+				node.setH(h);
+				coordQueue.add(node);
+			}
+			coord = new Coord<Integer, Integer>(x2, y2);
 			if(intersect(a, coord).size() == 0)
 			{
 				double g, h;
@@ -142,7 +209,7 @@ public class ArvoreCaminhos
 			oldCoord = oldNode.getCoord();	
 			oldG = oldNode.getG();
 
-			List<Coord<Integer, Integer>> walls = intersect(oldCoord, b);
+			List<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>> walls = intersect(oldCoord, b);
 
 			if(walls.size() == 0)
 			{
@@ -157,23 +224,85 @@ public class ArvoreCaminhos
 			}
 			else
 			{
-				for(int i = 0; i < intersectedWalls.size(); i++)
+				for(int i = 0; i < walls.size(); i++)
 				{
-					Coord<Integer, Integer> coord = intersectedWalls.get(i);
-					if(!oldNode.getPath().contains(coord))
+					int x1, x2, y1, y2;
+					x1 = walls.get(i).getX().getX();
+					y1 = walls.get(i).getX().getY();
+					x2 = walls.get(i).getY().getX();
+					y2 = walls.get(i).getY().getY();
+
+					if(x1 == x2)
 					{
-						if(intersect(oldCoord, coord).size() == 0)
+						if(y1 > y2)
 						{
-							double g, h;
-							PathNode node = new PathNode();
-							node.setPath(oldNode.getPath());
-							node.addCoord(coord);
-							g = lineDistance(oldCoord, coord) + oldG;
-							h = lineDistance(coord, b);
-							node.setG(g);
-							node.setH(h);
-							coordQueue.add(node);
+							y1 += 1;
+							y2 -= 1;
 						}
+						else
+						{
+							y1 -= 1;
+							y2 += 1;
+						}
+					}
+					else if(y1 == y2)
+					{
+						if(x1 > x2)
+						{
+							x1 += 1;
+							x2 -= 1;
+						}
+						else
+						{
+							x1 -= 1;
+							x2 += 1;
+						}
+					}
+					else
+					{
+						double m, c;
+						m = (y2-y1)/(x2-x1);
+						c = y1 - x1*m;
+						if(x1 > x2)
+						{
+							x1 += 1;
+							y1 = (int) Math.ceil(x1 * m + c);
+							x2 -= 1;
+							y2 = (int) Math.floor(x2 * m + c);
+						}
+						else
+						{
+							x1 -= 1;
+							y1 = (int) Math.floor(x1 * m + c);
+							x2 += 1;
+							y2 = (int) Math.ceil(x2 * m + c);
+						}
+					}
+					Coord<Integer, Integer> coord = new Coord<Integer, Integer>(x1, y1);
+					if(!oldNode.getPath().contains(coord) && intersect(oldCoord, coord).size() == 0)
+					{
+						double g, h;
+						PathNode node = new PathNode();
+						node.setPath(oldNode.getPath());
+						node.addCoord(coord);
+						g = lineDistance(oldCoord, coord) + oldG;
+						h = lineDistance(coord, b);
+						node.setG(g);
+						node.setH(h);
+						coordQueue.add(node);
+					}
+					coord = new Coord<Integer, Integer>(x2, y2);
+					if(!oldNode.getPath().contains(coord) && intersect(oldCoord, coord).size() == 0)
+					{
+						double g, h;
+						PathNode node = new PathNode();
+						node.setPath(oldNode.getPath());
+						node.addCoord(coord);
+						g = lineDistance(oldCoord, coord) + oldG;
+						h = lineDistance(coord, b);
+						node.setG(g);
+						node.setH(h);
+						coordQueue.add(node);
 					}
 				}
 			}
@@ -216,7 +345,7 @@ public class ArvoreCaminhos
 	 * @param b
 	 *            Coord<Integer,Integer> coordenadas do segundo ponto
 	 */
-	public List<Coord<Integer, Integer>> intersect(Coord<Integer,Integer> a,Coord<Integer,Integer> b)
+	public List<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>> intersect(Coord<Integer,Integer> a,Coord<Integer,Integer> b)
 	{
 		int ax = a.getX();
 		int ay = a.getY();
@@ -224,7 +353,8 @@ public class ArvoreCaminhos
 		int by = b.getY();
 		float cx, cy, dx, dy;
 
-		List<Coord<Integer, Integer>> intersectedWalls = new ArrayList<Coord<Integer, Integer>>();
+		List<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>> intersectedWalls = 
+				new ArrayList<Wall<Coord<Integer, Integer>, Coord<Integer, Integer>>>();
 
 		for (int i = 0; i < walls.size(); i++) {
 
@@ -238,8 +368,7 @@ public class ArvoreCaminhos
 			boolean result = line2.intersectsLine(line1);
 
 			if (result) {
-				intersectedWalls.add(walls.get(i).getX());
-				intersectedWalls.add(walls.get(i).getY());
+				intersectedWalls.add(walls.get(i));
 			}
 		}
 		return intersectedWalls;
@@ -312,7 +441,7 @@ public class ArvoreCaminhos
 		else
 			return true;
 	}
-	
+
 	//-------------------------------------get Distance modificar para a distancia já previamente calculada
 	public MyNode aStar()
 	{
@@ -333,7 +462,7 @@ public class ArvoreCaminhos
 				double g = 0;
 				double h = 0;
 				MyNode node = new MyNode();
-				
+
 				g = realDistance(lastElement, -2).getG() + oldG;
 				node.setG(g);
 
@@ -411,7 +540,7 @@ public class ArvoreCaminhos
 						}
 					}
 					node.setH(h);
-					
+
 					queue.add(node);
 				}		
 			}
@@ -454,6 +583,12 @@ public class ArvoreCaminhos
 				return 1;
 			return 0;
 		}
+	}
+
+
+	public HashMap<String, PathNode> getMap()
+	{
+		return distances;
 	}
 
 }
